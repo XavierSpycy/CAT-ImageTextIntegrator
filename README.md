@@ -1,3 +1,6 @@
+
+English Version | [中文版](README.zh-CN.md)
+
 # :heart_eyes_cat: CAT:  Convolutions, Attention & Transformers
 :rocket: Dive into the world of **CAT**! Imagine if computers could understand and combine the essence of both pictures and words, just like we humans naturally do. By marrying the strengths of Convolutions (think of it as the magic behind image filters) and Transformers (the genius tech behind language models), our **CAT** framework stands as a bridge, seamlessly blending visual and textual realms. So, whether you're marveling at a sunset photo or reading a poetic description, **CAT** seeks to decode, understand, and bring them together in harmony.
 
@@ -116,7 +119,7 @@ In this experimental endeavor, an innovative model architecture is proposed that
   </tr>
    <tr>
     <td align="center">Number of Training Steps</td>
-    <td align="center">Totol Number of Batches</td>
+    <td align="center">Total Number of Batches</td>
   </tr>
   <tr>
     <td align="center">Prediction</td>
