@@ -1,4 +1,4 @@
-[English Version](README.md)
+[English Version](README.md) | 中文版
 
 # :heart_eyes_cat: CAT:  Convolutions, Attention & Transformers
 :rocket: 深入**CAT**的世界！想象一下，如果计算机能够像我们人类自然做的那样理解并结合图片和文字的本质。通过结合卷积（想象它像图片滤镜背后的魔法）和变形器（语言模型背后的高级技术）的优势，我们的**CAT**框架成为一座桥梁，无缝融合视觉和文本领域。所以，无论你是欣赏日落照片还是阅读诗意的描述，**CAT**都试图解码、理解并和谐地将它们结合在一起。
