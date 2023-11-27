@@ -1,14 +1,12 @@
 import torch
 from tqdm import tqdm
 import numpy as np
-from evaluator import f1_score_
+from cat.evaluator import f1_score_
 from torch.nn.utils import clip_grad_norm_
 import matplotlib.pyplot as plt
 
-device = torch.device('cuda')
-
-def img_clf_train(model, train_loader, valid_loader, optimizer, criterion, epochs=20, clip_value=1.0, early_stop_threshold=10):
-  '''Training epochs, which can track some metrics for visualisation'''
+def img_clf_train(model, train_loader, valid_loader, optimizer, criterion, 
+                  epochs=20, device=torch.device('cuda'), clip_value=1.0, early_stop_threshold=10):
   loss_list = []
   f1_list = []
   valid_loss_list = [np.inf] # Start with a high validation loss
@@ -71,8 +69,8 @@ def img_clf_train(model, train_loader, valid_loader, optimizer, criterion, epoch
   axs[1].legend(loc='best')
   plt.show()
 
-def txt_clf_train(model, train_loader, valid_loader, optimizer, criterion, scheduler, epochs=20, clip_value=1.0, early_stop_threshold=10):
-  '''Training epochs, which can track some metrics for visualisation'''
+def txt_clf_train(model, train_loader, valid_loader, optimizer, criterion, scheduler, 
+                  epochs=20, device=torch.device('cuda'), clip_value=1.0, early_stop_threshold=10):
   loss_list = []
   f1_list = []
   valid_loss_list = [np.inf] # Start with a high validation loss
@@ -143,8 +141,8 @@ def txt_clf_train(model, train_loader, valid_loader, optimizer, criterion, sched
   axs[1].legend(loc='best')
   plt.show()
 
-def mul_clf_train(model, train_loader, valid_loader, optimizer, criterion, scheduler, epochs=20, clip_value=1.0, early_stop_threshold=10):
-  '''Training epochs, which can track some metrics for visualisation'''
+def mul_clf_train(model, train_loader, valid_loader, optimizer, criterion, scheduler, 
+                  epochs=20, device=torch.device('cuda'), clip_value=1.0, early_stop_threshold=10):
   loss_list = []
   f1_list = []
   valid_loss_list = [np.inf] # Start with a high validation loss

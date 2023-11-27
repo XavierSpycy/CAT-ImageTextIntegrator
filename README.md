@@ -4,6 +4,8 @@ English Version | [中文版](README.zh-CN.md)
 # :heart_eyes_cat: CAT:  Convolutions, Attention & Transformers
 :rocket: Dive into the world of **CAT**! Imagine if computers could understand and combine the essence of both pictures and words, just like we humans naturally do. By marrying the strengths of Convolutions (think of it as the magic behind image filters) and Transformers (the genius tech behind language models), our **CAT** framework stands as a bridge, seamlessly blending visual and textual realms. So, whether you're marveling at a sunset photo or reading a poetic description, **CAT** seeks to decode, understand, and bring them together in harmony.
 
+Looking for a swift kick-off? Explore our Jupyter Notebook directly in Google Colab! [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/XavierSpycy/CAT-ImageTextIntegrator/blob/main/notebook.ipynb)
+
 # :book:
 ## :sparkles: 1. Introduction
 In this experimental endeavor, an innovative model architecture is proposed that leverages the capabilities of Convolutional Neural Networks (CNNs) for the extraction of salient features from images, and Transformer-based models for gleaning intricate patterns from textual data. Termed the **C**onvolutions, **A**ttention & **T**ransformers or the **CAT** framework, the architecture deftly integrates attention mechanisms. These mechanisms serve as an intermediate conduit, facilitating the seamless amalgamation of visual and textual modalities.
@@ -732,9 +734,27 @@ def model_size(model):
 </p>
 
 ## :sparkles: 8. Project structure
-'**notebook.ipynb**', the IPython Notebook for the original experiment;       
-'**attentions.py**', implements attention mechanisms, including self-attention and cross-attention.    
-'**CusDatasets.py**', contains two customized dataset classes;      
-'**multimodal.py**', includes the developed multimodal models;      
-'**trainer.py**', comprises the training procedure and related items;  
-'**evaluator.py**', provides evaluation methods for single and multiple models.
+```
+├── cat          
+|   ├── attentions.py     
+|   ├── datasets.py
+|   ├── evaluator.py
+|   ├── multimodal.py
+|   ├── predict.py
+|   ├── trainer.py
+|   └── __init__.py
+├── data
+|   ├── data/
+|   │    └── *.jpg
+|   ├── train.csv
+|   └── test.csv
+├── model_hub      
+|   └── *.pth
+├── outcomes/      
+│   └── *.jpg/*.png/*.jpeg
+├── LICENSE
+├── notebook.ipynb
+├── README.md
+├── README.zh-CN.md
+└── requirements.txt
+```

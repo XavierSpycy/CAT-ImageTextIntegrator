@@ -2,8 +2,6 @@ import torch
 from io import BytesIO
 from sklearn.metrics import f1_score
 
-device = torch.deivce('cuda')
-
 def f1_score_(y_pred, y_true, threshold=0.5):
   y_pred = torch.sigmoid(y_pred)
   y_pred = (y_pred.detach().cpu().numpy() >= threshold).astype(int)
@@ -35,7 +33,7 @@ def img_model_f1_score_(model, data_loader, threshold=0.5):
   all_y_true = torch.cat(all_y_true, dim=0)
   return f1_score_(all_y_pred, all_y_true, threshold)
 
-def txt_model_f1_score_(model, data_loader, threshold=0.5):
+def txt_model_f1_score_(model, data_loader, threshold=0.5, device=torch.device('cuda')):
   model.eval()
   all_y_true = []
   all_y_pred = []
@@ -56,7 +54,7 @@ def txt_model_f1_score_(model, data_loader, threshold=0.5):
 
   return f1_score_(all_y_pred.cpu(), all_y_true.cpu(), threshold)
 
-def mul_model_f1_score_(model, data_loader, threshold=0.5):
+def mul_model_f1_score_(model, data_loader, threshold=0.5, device=torch.device('cuda')):
   model.eval()
   all_y_true = []
   all_y_pred = []

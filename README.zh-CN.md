@@ -3,6 +3,8 @@
 # :heart_eyes_cat: CAT:  Convolutions, Attention & Transformers
 :rocket: 深入**CAT**的世界！想象一下，如果计算机能够像我们人类自然做的那样理解并结合图片和文字的本质。通过结合卷积（想象它像图片滤镜背后的魔法）和变形器（语言模型背后的高级技术）的优势，我们的**CAT**框架成为一座桥梁，无缝融合视觉和文本领域。所以，无论你是欣赏日落照片还是阅读诗意的描述，**CAT**都试图解码、理解并和谐地将它们结合在一起。
 
+想要快速上手？ 直接在Google Colab中探索我们的Jupyter笔记本吧！ [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/XavierSpycy/CAT-ImageTextIntegrator/blob/main/notebook.ipynb)
+
 # :book:
 ## :sparkles: 1. 引言
 在这个实验性的努力中，我们提议了一种创新的模型结构，该结构利用卷积神经网络（CNNs）从图像中提取显著特征，并利用基于变形器的模型从文本数据中获取复杂的模式。称为**C**onvolutions, **A**ttention & **T**ransformers 或 **CAT** 框架，该结构巧妙地整合了注意力机制。这些机制作为中间的通道，促进了视觉和文本模式的无缝融合。
@@ -134,7 +136,7 @@
 
 ### 3.1 图像数据
 ```python
-# Customise ImageDataset
+# 自定义图像数据集
 class ImageDataset(Dataset):
   def __init__(self, imgid_label, img_folder, transform=None):
     self.imgid_label = imgid_label
@@ -153,7 +155,7 @@ class ImageDataset(Dataset):
   def __len__(self):
     return len(self.imgid_label)
 
-# Define a normalisation transformation, including Resize and Padding
+# 定义一个归一化变换，包括调整大小和填充
 class ResizeLongEdgeAndPad(object):
   def __init__(self, size, padding_mode='constant', fill=0):
     self.size = size
@@ -188,7 +190,7 @@ augments = transforms.Compose([
     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     ])
 
-# Define the normalisation method for test set
+# 为测试集定义归一化方法
 normalise = transforms.Compose([
     ResizeLongEdgeAndPad(224),
     transforms.ToTensor(),
@@ -210,7 +212,7 @@ normalise = transforms.Compose([
 ### 3.2 文本数据
 ```python
 min_length=23
-# Define a text data augmentation - random swap
+# 定义文本数据增强 - 随机交换
 def random_swap(words, n):
   words = words.copy()
   for _ in range(n):
@@ -220,7 +222,7 @@ def random_swap(words, n):
     words[idx1], words[idx2] = words[idx2], words[idx1]
   return words
 
-# Customise TextDataset
+# 自定义文本数据集
 class TextDataset(Dataset):
   def __init__(self, txt_label, tokenizer, max_length, random_swap_=False):
     self.txt_label = txt_label
@@ -280,12 +282,12 @@ class MultimodalDataset(Dataset):
     imgid_ = self.imgid_txt_label[idx][0]
     text = self.imgid_txt_label[idx][1]
     label = self.imgid_txt_label[idx][2]
-    # Image operations
+    # 图像操作
     img_path = os.path.join(self.img_folder, imgid_)
     img = Image.open(img_path).convert("RGB")
     if self.transform:
       img = self.transform(img)
-    # Text operations
+    # 文本操作
     if self.random_swap_:
       words = text.split()
       words = random_swap(words, n=5)
@@ -528,7 +530,7 @@ def model_size(model):
 </table>
 </div>
 
-### 5.3 自注意力 vs. 交叉注意力机制s
+### 5.3 自注意力 vs. 交叉注意力机制
 <div align="center">
 <table style="text-align: center;">
   <tr>
@@ -731,9 +733,27 @@ def model_size(model):
 </p>
 
 ## :sparkles: 8. 项目结构
-'**notebook.ipynb**', 原实验的IPython Notebook；       
-'**attentions.py**', 实现注意力机制，包括自注意力和交叉注意力；    
-'**CusDatasets.py**', 包含三个自定义的数据集类；      
-'**multimodal.py**', 包括开发的多模态模型；      
-'**trainer.py**', 含有训练过程和相关事项；  
-'**evaluator.py**', 提供了模型评估的方法。
+```
+├── cat          
+|   ├── attentions.py     
+|   ├── datasets.py
+|   ├── evaluator.py
+|   ├── multimodal.py
+|   ├── predict.py
+|   ├── trainer.py
+|   └── __init__.py
+├── data
+|   ├── data/
+|   │    └── *.jpg
+|   ├── train.csv
+|   └── test.csv
+├── model_hub      
+|   └── *.pth
+├── outcomes/      
+│   └── *.jpg/*.png/*.jpeg
+├── LICENSE
+├── notebook.ipynb
+├── README.md
+├── README.zh-CN.md
+└── requirements.txt
+```

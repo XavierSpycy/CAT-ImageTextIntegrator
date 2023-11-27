@@ -1,0 +1,8 @@
+.DS_Store
+/.ipynb_checkpoints
+cat/__pycache__/*
+__pycache__/*
+notebook-1.ipynb
+model_hub/*
+multi-label-classification-competition-2023.zip
+data/*
