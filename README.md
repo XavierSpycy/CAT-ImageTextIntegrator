@@ -4,11 +4,18 @@ English Version | [中文版](README.zh-CN.md)
 # :heart_eyes_cat: CAT:  Convolutions, Attention & Transformers
 :rocket: Dive into the world of **CAT**! Imagine if computers could understand and combine the essence of both pictures and words, just like we humans naturally do. By marrying the strengths of Convolutions (think of it as the magic behind image filters) and Transformers (the genius tech behind language models), our **CAT** framework stands as a bridge, seamlessly blending visual and textual realms. So, whether you're marveling at a sunset photo or reading a poetic description, **CAT** seeks to decode, understand, and bring them together in harmony.
 
-Looking for a swift kick-off? Explore our Jupyter Notebook directly in Google Colab! [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/XavierSpycy/CAT-ImageTextIntegrator/blob/main/notebook.ipynb)
+Looking for a swift kick-off? Explore our Jupyter Notebook directly in Google Colab!      
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/XavierSpycy/CAT-ImageTextIntegrator/blob/main/notebook.ipynb)
 
 # :book:
 ## :sparkles: 1. Introduction
 In this experimental endeavor, an innovative model architecture is proposed that leverages the capabilities of Convolutional Neural Networks (CNNs) for the extraction of salient features from images, and Transformer-based models for gleaning intricate patterns from textual data. Termed the **C**onvolutions, **A**ttention & **T**ransformers or the **CAT** framework, the architecture deftly integrates attention mechanisms. These mechanisms serve as an intermediate conduit, facilitating the seamless amalgamation of visual and textual modalities.
+
+<p align="center">
+  <img src="./outcomes/cat.jpg" width="50%">
+  <br>
+  Hmmm...NOT this 'CAT'.
+</p>
 
 <p align="center">
   <img src="./outcomes/CAT-2.jpeg">
@@ -16,11 +23,6 @@ In this experimental endeavor, an innovative model architecture is proposed that
   This is my 'CAT'!
 </p>
 
-<p align="center">
-  <img src="./outcomes/cat.jpg" width="50%">
-  <br>
-  Hmmm...NOT this 'CAT'.
-</p>
 
 ## :sparkles: 2. Hyperparameters of the optimal model
 <div align="center">
@@ -136,68 +138,7 @@ In this experimental endeavor, an innovative model architecture is proposed that
 :bulb: How to process multimodal data? That is a good point!
 
 ### 3.1 Image data
-```python
-# Customise ImageDataset
-class ImageDataset(Dataset):
-  def __init__(self, imgid_label, img_folder, transform=None):
-    self.imgid_label = imgid_label
-    self.img_folder = img_folder
-    self.transform = transform
 
-  def __getitem__(self, idx):
-    imgid_ = self.imgid_label[idx][0]
-    label_ = self.imgid_label[idx][1]
-    img_path = os.path.join(self.img_folder, imgid_)
-    img = Image.open(img_path).convert("RGB")
-    if self.transform:
-      img = self.transform(img)
-    return img, label_
-
-  def __len__(self):
-    return len(self.imgid_label)
-
-# Define a normalisation transformation, including Resize and Padding
-class ResizeLongEdgeAndPad(object):
-  def __init__(self, size, padding_mode='constant', fill=0):
-    self.size = size
-    self.padding_mode = padding_mode
-    self.fill = fill
-
-  def __call__(self, img):
-    w, h = img.size
-    if h > w:
-      new_h = self.size
-      new_w = int(self.size * w / h)
-    else:
-      new_w = self.size
-      new_h = int(self.size * h / w)
-
-    img = img.resize((new_w, new_h), Image.BICUBIC)
-
-    pad_w = self.size - new_w
-    pad_h = self.size - new_h
-
-    padding = (pad_w // 2, pad_h // 2, pad_w - pad_w // 2, pad_h - pad_h // 2)
-    return ImageOps.expand(img, padding, fill=self.fill)
-
-augments = transforms.Compose([
-    transforms.RandomHorizontalFlip(),
-    transforms.RandomVerticalFlip(),
-    transforms.RandomRotation(20),
-    transforms.ColorJitter(brightness=0.5, contrast=0.5, saturation=0.5, hue=0.1),
-    transforms.Resize(232),
-    transforms.RandomResizedCrop((224, 224), scale=(0.1, 1), ratio=(0.7, 1.0/0.7)),
-    transforms.ToTensor(),
-    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-    ])
-
-# Define the normalisation method for test set
-normalise = transforms.Compose([
-    ResizeLongEdgeAndPad(224),
-    transforms.ToTensor(),
-    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-])
-```
 <p align="center">
   <img src="./outcomes/aug.png">
   <br>
@@ -211,54 +152,7 @@ normalise = transforms.Compose([
 </p>
 
 ### 3.2 Text data
-```python
-min_length=23
-# Define a text data augmentation - random swap
-def random_swap(words, n):
-  words = words.copy()
-  for _ in range(n):
-    if len(words) < 2:
-      break
-    idx1, idx2 = random.sample(range(len(words)), 2)
-    words[idx1], words[idx2] = words[idx2], words[idx1]
-  return words
 
-# Customise TextDataset
-class TextDataset(Dataset):
-  def __init__(self, txt_label, tokenizer, max_length, random_swap_=False):
-    self.txt_label = txt_label
-    self.tokenizer = tokenizer
-    self.max_length = max_length
-    self.random_swap_ = random_swap_
-
-  def __len__(self):
-    return len(self.txt_label)
-
-  def __getitem__(self, idx):
-    text = self.txt_label[idx][0]
-    label = self.txt_label[idx][1]
-    if self.random_swap_:
-      words = text.split()
-      words = random_swap(words, n=min_length)
-      text = ' '.join(words)
-
-    encoding = self.tokenizer.encode_plus(
-        text,
-        add_special_tokens=True,
-        max_length=self.max_length,
-        return_token_type_ids=False,
-        padding='max_length',
-        truncation=True,
-        return_attention_mask=True,
-        return_tensors='pt',
-    )
-
-    return {
-        'input_ids': encoding['input_ids'].flatten(),
-        'attention_mask': encoding['attention_mask'].flatten(),
-        'label': torch.tensor(label, dtype=torch.long)
-    }
-```
 <p align="center">
   <img src="./outcomes/txtaug.jpg">
   <br>
@@ -266,68 +160,10 @@ class TextDataset(Dataset):
 </p>
 
 ### 3.3 Multimodal data
-```python
-class MultimodalDataset(Dataset):
-  def __init__(self, imgid_txt_label, img_folder, tokenizer, max_length, transform=None, random_swap_=False):
-    self.imgid_txt_label = imgid_txt_label
-    self.img_folder = img_folder
-    self.tokenizer = tokenizer
-    self.max_length = max_length
-    self.transform = transform
-    self.random_swap_ = random_swap_
-
-  def __len__(self):
-    return len(self.imgid_txt_label)
-
-  def __getitem__(self, idx):
-    imgid_ = self.imgid_txt_label[idx][0]
-    text = self.imgid_txt_label[idx][1]
-    label = self.imgid_txt_label[idx][2]
-    # Image operations
-    img_path = os.path.join(self.img_folder, imgid_)
-    img = Image.open(img_path).convert("RGB")
-    if self.transform:
-      img = self.transform(img)
-    # Text operations
-    if self.random_swap_:
-      words = text.split()
-      words = random_swap(words, n=5)
-      text = ' '.join(words)
-
-    encoding = self.tokenizer.encode_plus(
-        text,
-        add_special_tokens=True,
-        max_length=self.max_length,
-        return_token_type_ids=False,
-        padding='max_length',
-        truncation=True,
-        return_attention_mask=True,
-        return_tensors='pt',
-    )
-    txt_dict = {
-        'input_ids': encoding['input_ids'].flatten(),
-        'attention_mask': encoding['attention_mask'].flatten(),
-        'label': torch.tensor(label, dtype=torch.long)
-    }
-    return img, txt_dict
-```
 
 ## :sparkles: 4. Evaluation methods
-```python
-def f1_score_(y_pred, y_true, threshold=0.5):
-  y_pred = torch.sigmoid(y_pred)
-  y_pred = (y_pred.detach().cpu().numpy() >= threshold).astype(int)
-  y_true = y_true.detach().cpu().numpy()
-  return f1_score(y_true, y_pred, average='micro')
-     
-
-def model_size(model):
-  buffer = BytesIO()
-  torch.save(model.state_dict(), buffer, _use_new_zipfile_serialization=True)
-  size = buffer.tell() / (1024*1024)
-  buffer.close()
-  return size
-```
+- F1 score
+- Model size
 
 ## :sparkles: 5. Experimental comparison
 ### 5.1 Image vs. Text classifiers
